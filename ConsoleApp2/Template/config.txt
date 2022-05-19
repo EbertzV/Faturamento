@@ -1,0 +1,21 @@
+﻿<cabecalho>
+****************************************************************************
+*  Controle de caixa v1.0                                                  *
+*                                                                          *
+*  Autor: Vitor Ebertz                                                     *
+*                                                                          *
+*  Data: 18/05/2022                                                        *
+*                                                                          *
+****************************************************************************
+</cabecalho>
+
+<menu_inicial>
+Software de controle de caixa v1.0
+O que você deseja fazer?
+
+</menu_inicial>
+
+<final_sucesso>
+Obrigado por utilizar Controle de caixa v1.0!
+O programa irá encerrar.
+</final_sucesso>

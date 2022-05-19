@@ -1,12 +1,12 @@
 ﻿using Faturamento.Dominio.Movimentos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Faturamento.Dominio.ServicosDeDominio.Movimentos
 {
     public interface IMovimentosRepositorio
     {
-        void Gravar(Movimento movimento);
-        IEnumerable<Movimento> RecuperarParaCaixa(Guid caixaId);
+        Task<IEnumerable<Movimento>> RecuperarParaCaixaAsync(Guid caixaId);
     }
 }

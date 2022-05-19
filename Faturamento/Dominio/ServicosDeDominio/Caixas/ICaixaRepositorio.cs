@@ -1,12 +1,12 @@
 ﻿using Faturamento.Dominio.Caixas;
 using System;
+using System.Threading.Tasks;
 
 namespace Faturamento.Dominio.ServicosDeDominio.Caixas
 {
     public interface ICaixaRepositorio
     {
-        Caixa RecuperarCaixa(Guid id);
-        void AtualizarSaldo(Caixa caixa);
-        void Atualizar(Caixa caixa);
+        Task<Caixa> RecuperarCaixaAsync(Guid id);
+        Task AtualizarAsync(Caixa caixa);
     }
 }

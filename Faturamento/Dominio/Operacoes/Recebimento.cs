@@ -13,7 +13,7 @@ namespace Faturamento.Dominio.Operacoes
         public void Efetuar(decimal valor, string descricao)
         {
             Caixa.AdicionarValor(valor);
-            Movimento = Movimento.NovoDeEntrada(valor, Caixa.Id, descricao);
+            Movimento = Movimento.NovoDeEntrada(valor, descricao);
         }
 
         public Caixa Caixa { get; }

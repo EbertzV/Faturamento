@@ -22,14 +22,14 @@ namespace Faturamento.Dominio.Operacoes
         private Transferencia Receber(decimal valor, string descricao)
         {
             CaixaDestino.AdicionarValor(valor);
-            MovimentoEntrada = Movimento.NovoDeEntrada(valor, CaixaDestino.Id, descricao);
+            MovimentoEntrada = Movimento.NovoDeEntrada(valor, descricao);
             return this;
         }
 
         private Transferencia Pagar(decimal valor, string descricao)
         {
             CaixaOrigem.SubtrairValor(valor);
-            MovimentoSaida = Movimento.NovoDeSaida(valor, CaixaOrigem.Id, descricao);
+            MovimentoSaida = Movimento.NovoDeSaida(valor,  descricao);
             return this;
         }
 

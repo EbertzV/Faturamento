@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Faturamento.Dominio.ServicosDeDominio.Caixas
 {
@@ -11,13 +12,13 @@ namespace Faturamento.Dominio.ServicosDeDominio.Caixas
             _caixaRepositorio = caixaRepositorio;
         }
 
-        public void Executar(Guid caixaId)
+        public async Task Executar(Guid caixaId)
         {
-            var caixa = _caixaRepositorio.RecuperarCaixa(caixaId);
+            var caixa = await _caixaRepositorio.RecuperarCaixaAsync(caixaId);
 
             caixa.Abrir();
 
-            _caixaRepositorio.Atualizar(caixa);
+            await _caixaRepositorio.AtualizarAsync(caixa);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Faturamento.Dominio.Caixas;
 using Faturamento.Dominio.ServicosDeDominio.Movimentos;
 using System;
+using System.Threading.Tasks;
 
 namespace Faturamento.Dominio.ServicosDeDominio.Caixas
 {
@@ -15,16 +16,16 @@ namespace Faturamento.Dominio.ServicosDeDominio.Caixas
             _movimentosRepositorio = movimentosRepositorio;
         }
 
-        public void Executar(Guid caixaId)
+        public async Task Executar(Guid caixaId)
         {
-            var caixa = _caixaRepositorio.RecuperarCaixa(caixaId);
-            var movimentos = _movimentosRepositorio.RecuperarParaCaixa(caixaId);
+            var caixa = await _caixaRepositorio.RecuperarCaixaAsync(caixaId);
+            var movimentos = await _movimentosRepositorio.RecuperarParaCaixaAsync(caixaId);
 
             var fechamento = new Fechamento(caixa, new MovimentosDoCaixa(movimentos));
             if (fechamento.Efetuar())
             {
                 caixa.Fechar();
-                _caixaRepositorio.Atualizar(caixa);
+                await _caixaRepositorio.AtualizarAsync(caixa);
             }
         }
     }
