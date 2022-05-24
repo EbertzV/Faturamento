@@ -1,16 +1,16 @@
 ﻿using Cliente.Comando.Menus.MenuInicial;
 using Cliente.Comando.Menus.Vazio;
-using System;
+using MediatR;
 
 namespace Cliente
 {
     public sealed class ComandoInicialFactory : IComandoFactory
     {
-        private readonly IServiceProvider _container;
+        private readonly IMediator _mediator;
 
-        public ComandoInicialFactory(IServiceProvider container)
+        public ComandoInicialFactory(IMediator mediator)
         {
-            _container = container;
+            _mediator = mediator;
         }
 
         public IComandoHandler Gerar(string comando)
@@ -18,13 +18,13 @@ namespace Cliente
             switch (comando)
             {
                 case "receber":
-                    return new EfetuarRecebimentoComandoHandler(_container);
+                    return new EfetuarRecebimentoComandoHandler(_mediator);
                 case "abrir caixa":
-                    return new AbrirCaixaComandoHandler(_container);
+                    return new AbrirCaixaComandoHandler(_mediator);
                 case "pagar":
-                    return new EfetuarPagamentoComandoHandler(_container);
+                    return new EfetuarPagamentoComandoHandler(_mediator);
                 case "transferir":
-                    return new EfetuarTransferenciaComandoHandler(_container);
+                    return new EfetuarTransferenciaComandoHandler(_mediator);
                 default:
                     return new ComandoVazioHandler();
             }

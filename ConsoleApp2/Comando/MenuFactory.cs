@@ -1,15 +1,15 @@
 ﻿using Cliente.Comando.Menus.Vazio;
-using System;
+using MediatR;
 
 namespace Cliente.Comando
 {
     public sealed class MenuFactory
     {
-        private readonly IServiceProvider _container;
+        private readonly IMediator _mediator;
 
-        public MenuFactory(IServiceProvider container)
+        public MenuFactory(IMediator mediator)
         {
-            _container = container;
+            _mediator = mediator;
         }
 
         public IComandoFactory Gerar(string menu)
@@ -17,7 +17,7 @@ namespace Cliente.Comando
             switch (menu)
             {
                 case "menu_inicial":
-                    return new ComandoInicialFactory(_container);
+                    return new ComandoInicialFactory(_mediator);
                 default:
                     return new ComandoVazioFactory();
             }

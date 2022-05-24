@@ -1,7 +1,12 @@
 ﻿using Cliente;
 using Cliente.Comando;
 using Cliente.Template;
+using Faturamento.Dominio.Recebimentos;
+using Faturamento.Dominio.ServicosDeDominio.Caixas;
+using Faturamento.Dominio.ServicosDeDominio.Pagamentos;
+using Faturamento.Dominio.ServicosDeDominio.Transferencias;
 using Infra.SqlServer;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
@@ -23,7 +28,7 @@ namespace ConsoleApp2
             var comando = "";
             while (comando != "sair")
             {
-                var menu = new MenuFactory(_serviceProvider).Gerar("menu_inicial");
+                var menu = new MenuFactory(_serviceProvider.GetService<IMediator>()).Gerar("menu_inicial");
                 Console.Write(_fillTemplate.Fill("menu_inicial"));
 
                 comando = Console.ReadLine();
@@ -42,6 +47,13 @@ namespace ConsoleApp2
         public static void ConfigureServices()
         {
             var serviceCollection = new ServiceCollection();
+            serviceCollection
+                .AddMediatR(typeof(Program))
+                .AddScoped<EfetuarPagamentoServico>()
+                .AddScoped<EfeutarRecebimentoServico>()
+                .AddScoped<EfetuarTransferenciaServico>()
+                .AddScoped<AbrirCaixa>()
+                .AddScoped<FecharCaixa>();
             ServiceProviderConfiguration.AdicionarServicos(serviceCollection);
             _serviceProvider = serviceCollection.BuildServiceProvider();
         }
