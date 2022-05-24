@@ -1,20 +1,17 @@
-﻿using Cliente.Comando;
+﻿using Autofac;
+using Cliente.Comando;
 using Cliente.Template;
-using Faturamento.Definicoes;
-using Faturamento.Dominio.Recebimentos;
-using Faturamento.Dominio.ServicosDeDominio.Caixas;
-using Faturamento.Dominio.ServicosDeDominio.Pagamentos;
-using Faturamento.Dominio.ServicosDeDominio.Transferencias;
-using Infra.SqlServer;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Linq;
+using System.Reflection;
+using MediatR.Extensions.Autofac.DependencyInjection;
 
 namespace ConsoleApp2
 {
     class Program
     {
-        private static IServiceProvider _serviceProvider;
+        private static IContainer _serviceProvider;
         private static readonly string _config = "./template/config.txt";
         private static readonly FillTemplate _fillTemplate = new FillTemplate(_config);
 
@@ -31,7 +28,7 @@ namespace ConsoleApp2
             var comando = "";
             while (comando != "sair")
             {
-                var menu = new MenuFactory(_serviceProvider.GetService<IMediator>()).Gerar("menu_inicial");
+                var menu = new MenuFactory(_serviceProvider.Resolve<IMediator>()).Gerar("menu_inicial");
                 Console.Write(_fillTemplate.Fill("menu_inicial"));
 
                 comando = Console.ReadLine();
@@ -49,16 +46,34 @@ namespace ConsoleApp2
 
         public static void ConfigureServices()
         {
-            var serviceCollection = new ServiceCollection();
-            serviceCollection
-                .AddMediatR(typeof(Program))
-                .AddScoped<IRequestHandler<EfetuarRecebimentoComando, Resultado<bool>>, EfeutarRecebimentoServico>()
-                .AddScoped<IRequestHandler<EfetuarTransferenciaComando, Resultado<bool>>, EfetuarTransferenciaServico>()
-                .AddScoped<IRequestHandler<EfetuarPagamentoComando, Resultado<bool>>, EfetuarPagamentoServico>()
-                .AddScoped<IRequestHandler<FecharCaixaComando, Resultado<bool>>, FecharCaixa>()
-                .AddScoped<IRequestHandler<AbrirCaixaComando, Resultado<bool>>, AbrirCaixa>();
-            ServiceProviderConfiguration.AdicionarServicos(serviceCollection);
-            _serviceProvider = serviceCollection.BuildServiceProvider();
+            var builder = new ContainerBuilder();
+
+            var faturamento = Assembly.Load("Faturamento");
+            var infra = Assembly.Load("Infra.SqlServer");
+
+            builder.RegisterMediatR(typeof(Program).Assembly, faturamento, infra);
+
+            builder
+                .RegisterAssemblyTypes(faturamento)
+                .Where(t => t.Name.EndsWith("Repositorio"))
+                .AsImplementedInterfaces();
+
+            builder
+                .RegisterAssemblyTypes(faturamento)
+                .Where(t => t.Name.EndsWith("Servico"))
+                .AsImplementedInterfaces();
+
+            builder
+                .RegisterAssemblyTypes(infra)
+                .Where(t => t.Name.EndsWith("Repositorio"))
+                .AsImplementedInterfaces();
+
+            builder
+                .RegisterAssemblyTypes(infra)
+                .Where(t => t.Name.EndsWith("Servico"))
+                .AsImplementedInterfaces();
+
+            _serviceProvider = builder.Build();
         }
     }
 }

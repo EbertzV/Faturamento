@@ -1,9 +1,6 @@
 ﻿using Faturamento.Dominio.Recebimentos;
 using System;
 using MediatR;
-using Faturamento.Definicoes;
-using System.Threading.Tasks;
-using System.Threading;
 
 namespace Cliente.Comando.Menus.MenuInicial
 {

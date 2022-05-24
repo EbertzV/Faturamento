@@ -32,7 +32,6 @@ namespace Faturamento.Dominio.Caixas
     {
         private MovimentosDeSaidaDoCaixa(IEnumerable<Movimento> movimentos) : base(movimentos)
         {
-            movimentos.Where(m => m.SouDeSaida());
         }
 
         public static MovimentosDeSaidaDoCaixa Recuperar(IEnumerable<Movimento> movimentos)

@@ -14,12 +14,10 @@ namespace Faturamento.Dominio.Caixas
 
         public Resultado<bool> Executar()
         {
-            if (_validadorSaldo.SaldoConfere)
-            {
-                _caixa.Fechar();
-                return true;
-            }
-            else return FalhasFechamento.SaldoInvalido;
+            if (!_validadorSaldo.SaldoConfere)
+                return FalhasFechamento.SaldoInvalido;
+            _caixa.Fechar();
+            return true;
         }
     }
 }
