@@ -1,6 +1,9 @@
 ﻿using Faturamento.Dominio.Recebimentos;
 using System;
 using MediatR;
+using Faturamento.Definicoes;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Cliente.Comando.Menus.MenuInicial
 {
@@ -13,7 +16,7 @@ namespace Cliente.Comando.Menus.MenuInicial
             _mediator = mediator;
         }
 
-        public void Executar()
+        public void Executar(Guid operadorId)
         {
             Console.WriteLine("Informe o caixa");
             var caixa = Console.ReadLine();
@@ -24,7 +27,7 @@ namespace Cliente.Comando.Menus.MenuInicial
             Console.WriteLine("Informe a descrição");
             var descricao = Console.ReadLine();
             
-            var comando = new EfetuarRecebimentoComando(Guid.Parse(caixa), decimal.Parse(valor), descricao);
+            var comando = new EfetuarRecebimentoComando(Guid.Parse(caixa), decimal.Parse(valor), descricao, operadorId);
             
             var resultado = _mediator.Send(comando).GetAwaiter().GetResult();
         }

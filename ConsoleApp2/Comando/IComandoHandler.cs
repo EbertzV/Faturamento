@@ -1,7 +1,9 @@
-﻿namespace Cliente
+﻿using System;
+
+namespace Cliente
 {
     public interface IComandoHandler
     {
-        void Executar();
+        void Executar(Guid operadorId);
     }
 }

@@ -16,20 +16,20 @@ namespace Faturamento.Dominio.Operacoes
         public static Transferencia Nova(Caixa caixaOrigem, Caixa caixaDestino)
             => new Transferencia(Guid.NewGuid(), caixaOrigem, caixaDestino);
 
-        public Transferencia Efetuar(decimal valor, string descricao = "")
-            => Pagar(valor, descricao).Receber(valor, descricao);
+        public Transferencia Efetuar(decimal valor, DateTime quando, string descricao = "")
+            => Pagar(valor, quando, descricao).Receber(valor, quando, descricao);
 
-        private Transferencia Receber(decimal valor, string descricao)
+        private Transferencia Receber(decimal valor, DateTime quando, string descricao)
         {
             CaixaDestino.AdicionarValor(valor);
-            MovimentoEntrada = Movimento.NovoDeEntrada(valor, descricao);
+            MovimentoEntrada = Movimento.NovoDeEntrada(valor, quando, descricao);
             return this;
         }
 
-        private Transferencia Pagar(decimal valor, string descricao)
+        private Transferencia Pagar(decimal valor, DateTime quando, string descricao)
         {
             CaixaOrigem.SubtrairValor(valor);
-            MovimentoSaida = Movimento.NovoDeSaida(valor,  descricao);
+            MovimentoSaida = Movimento.NovoDeSaida(valor, quando, descricao);
             return this;
         }
 

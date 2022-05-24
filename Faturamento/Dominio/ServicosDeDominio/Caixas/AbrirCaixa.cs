@@ -1,11 +1,12 @@
-﻿using MediatR;
+﻿using Faturamento.Definicoes;
+using MediatR;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Faturamento.Dominio.ServicosDeDominio.Caixas
 {
-    public sealed class AbrirCaixaComando : IRequest<bool>
+    public sealed class AbrirCaixaComando : IRequest<Resultado<bool>>
     {
         public AbrirCaixaComando(Guid idCaixa)
         {
@@ -15,7 +16,7 @@ namespace Faturamento.Dominio.ServicosDeDominio.Caixas
         public Guid IdCaixa { get; }
     }
 
-    public sealed class AbrirCaixa : IRequestHandler<AbrirCaixaComando, bool>
+    public sealed class AbrirCaixa : IRequestHandler<AbrirCaixaComando, Resultado<bool>>
     {
         private readonly ICaixaRepositorio _caixaRepositorio;
 
@@ -24,7 +25,7 @@ namespace Faturamento.Dominio.ServicosDeDominio.Caixas
             _caixaRepositorio = caixaRepositorio;
         }
 
-        public async Task<bool> Handle(AbrirCaixaComando request, CancellationToken cancellationToken)
+        public async Task<Resultado<bool>> Handle(AbrirCaixaComando request, CancellationToken cancellationToken)
         {
             var caixa = await _caixaRepositorio.RecuperarCaixaAsync(request.IdCaixa);
 

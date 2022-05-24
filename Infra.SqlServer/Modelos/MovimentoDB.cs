@@ -12,5 +12,6 @@ namespace Infra.SqlServer.Modelos
         public string Tipo { get; set; }
         public decimal Valor { get; set; }
         public CaixaDB Caixa { get; set; }
+        public DateTime Data { get; set; }
     }
 }

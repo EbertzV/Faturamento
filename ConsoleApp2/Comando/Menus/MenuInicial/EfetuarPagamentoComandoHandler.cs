@@ -13,7 +13,7 @@ namespace Cliente.Comando.Menus.MenuInicial
             _mediator = mediator;
         }
 
-        public void Executar()
+        public void Executar(Guid operadorId)
         {
             Console.WriteLine("Informe o caixa");
             var caixa = Console.ReadLine();
@@ -24,7 +24,7 @@ namespace Cliente.Comando.Menus.MenuInicial
             Console.WriteLine("Informe a descrição");
             var descricao = Console.ReadLine();
 
-            var comando = new EfetuarPagamentoComando(Guid.Parse(caixa), decimal.Parse(valor), descricao);
+            var comando = new EfetuarPagamentoComando(Guid.Parse(caixa), decimal.Parse(valor), descricao, operadorId);
 
             _mediator.Send(comando).GetAwaiter().GetResult();
         }

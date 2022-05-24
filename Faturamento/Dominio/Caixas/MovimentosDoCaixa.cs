@@ -4,26 +4,39 @@ using System.Linq;
 
 namespace Faturamento.Dominio.Caixas
 {
-    public sealed class MovimentosDoCaixa
+
+    public abstract class MovimentosDoCaixa
     {
-        public MovimentosDoCaixa(IEnumerable<Movimento> movimentos)
+        protected MovimentosDoCaixa(IEnumerable<Movimento> movimentos)
         {
             Movimentos = movimentos;
         }
 
-        public IEnumerable<Movimento> Movimentos { get; }
+        protected IEnumerable<Movimento> Movimentos { get; }
 
-        private decimal TotalMovimentosEntrada()
-            => Movimentos
-                .Where(m => m.SouDeEntrada())
-                .Sum(e => e.Valor);
+        public virtual decimal Total => Movimentos.Sum(m => m.Valor);
+    }
 
-        private decimal TotalMovimentosSaida()
-            => Movimentos
-                .Where(m => m.SouDeSaida())
-                .Sum(s => s.Valor);
+    public sealed class MovimentosDeEntradaDoCaixa : MovimentosDoCaixa
+    {
+        private MovimentosDeEntradaDoCaixa(IEnumerable<Movimento> movimentos) : base(movimentos)
+        {
+            
+        }
 
-        public decimal TotalMovimentos()
-            => TotalMovimentosEntrada() - TotalMovimentosSaida();
+        public static MovimentosDeEntradaDoCaixa Recuperar(IEnumerable<Movimento> movimentos)
+            => new MovimentosDeEntradaDoCaixa(movimentos.Where(m => m.SouDeEntrada()));
+    }
+
+    public sealed class MovimentosDeSaidaDoCaixa : MovimentosDoCaixa
+    {
+        private MovimentosDeSaidaDoCaixa(IEnumerable<Movimento> movimentos) : base(movimentos)
+        {
+            movimentos.Where(m => m.SouDeSaida());
+        }
+
+        public static MovimentosDeSaidaDoCaixa Recuperar(IEnumerable<Movimento> movimentos)
+            => new MovimentosDeSaidaDoCaixa(movimentos.Where(m => m.SouDeSaida()));
     }
 }
+

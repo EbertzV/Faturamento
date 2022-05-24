@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Cliente.Comando.Menus.MenuInicial
 {
-    public sealed class AbrirCaixaComandoHandler : IComandoHandler
+    public sealed class AbrirCaixaComandoHandler :  IComandoHandler
     {
         private readonly IMediator _mediator;
 
@@ -13,7 +13,7 @@ namespace Cliente.Comando.Menus.MenuInicial
             _mediator = mediator;
         }
 
-        public void Executar()
+        public void Executar(Guid operadorId)
         {
             Console.WriteLine("Informe o caixa");
             var caixa = Console.ReadLine();

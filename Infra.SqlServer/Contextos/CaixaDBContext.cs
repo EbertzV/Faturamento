@@ -7,6 +7,7 @@ namespace Infra.SqlServer.Modelos
     {
         public DbSet<CaixaDB> Caixas { get; set; }
         public DbSet<MovimentoDB> Movimentos { get; set; }
+        public DbSet<OperacaoDB> Operacoes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

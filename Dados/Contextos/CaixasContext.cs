@@ -7,6 +7,7 @@ namespace Dados
     {
         public DbSet<Caixa> Caixas { get; set; }
         public DbSet<Movimento> Movimentos { get; set; }
+        public DbSet<Operacao> Operacoes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

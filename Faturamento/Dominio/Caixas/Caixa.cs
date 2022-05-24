@@ -1,4 +1,5 @@
-﻿using Faturamento.Dominio.Definicoes;
+﻿using Faturamento.Definicoes;
+using Faturamento.Dominio.Definicoes;
 using System;
 
 namespace Faturamento.Dominio.Caixas
@@ -19,31 +20,27 @@ namespace Faturamento.Dominio.Caixas
         public EStatusCaixa Status { get; private set; }
 
         public void Abrir()
-        {
-            Status = EStatusCaixa.Aberto;
-        }
+            => Status = EStatusCaixa.Aberto;
 
         public void Fechar()
-        {
-            Status = EStatusCaixa.Fechado;
-        }
+            => Status = EStatusCaixa.Fechado;
 
-        public bool AdicionarValor(decimal valor)
+        public Resultado<bool> AdicionarValor(decimal valor)
         {
             if (Status == EStatusCaixa.Fechado)
-                return false;
+                return FalhasCaixa.CaixaFechado;
             if (valor <= 0)
-                return false;
+                return FalhasCaixa.ValorNaoEhMaiorQueZero;
             SaldoAtual += valor;
             return true;
         }
 
-        public bool SubtrairValor(decimal valor)
+        public Resultado<bool> SubtrairValor(decimal valor)
         {
             if (Status == EStatusCaixa.Fechado)
-                return false;
+                return FalhasCaixa.CaixaFechado;
             if (valor <= 0)
-                return false;
+                return FalhasCaixa.ValorNaoEhMaiorQueZero;
             SaldoAtual -= valor;
             return true;
         }

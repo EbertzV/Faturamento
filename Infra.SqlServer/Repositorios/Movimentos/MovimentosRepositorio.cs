@@ -16,7 +16,7 @@ namespace Infra.SqlServer.Repositorios.Movimentos
         {
             using var contexto = new CaixaDBContext();
             var movimentosDb = contexto.Movimentos.Where(m => m.Caixa.Id == caixaId);
-            return movimentosDb.Select(m => new Movimento(m.Id, m.Descricao, (ETipoMovimento)Enum.Parse(typeof(ETipoMovimento), m.Tipo), m.Valor));
+            return movimentosDb.Select(m => new Movimento(m.Id, m.Descricao, (ETipoMovimento)Enum.Parse(typeof(ETipoMovimento), m.Tipo), m.Valor, m.Data));
         }
     }
 }

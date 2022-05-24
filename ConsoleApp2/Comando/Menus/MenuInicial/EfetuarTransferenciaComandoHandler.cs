@@ -13,7 +13,7 @@ namespace Cliente.Comando.Menus.MenuInicial
             _mediator = mediator;
         }
 
-        public void Executar()
+        public void Executar(Guid operadorId)
         {
             Console.WriteLine("Informe o caixa de origem");
             var caixaOrigem = Console.ReadLine();
@@ -27,7 +27,7 @@ namespace Cliente.Comando.Menus.MenuInicial
             Console.WriteLine("Informe o caixa");
             var descricao = Console.ReadLine();
 
-            var comando = new EfetuarTransferenciaComando(Guid.Parse(caixaOrigem), Guid.Parse(caixaDestino), decimal.Parse(valor), descricao);
+            var comando = new EfetuarTransferenciaComando(Guid.Parse(caixaOrigem), Guid.Parse(caixaDestino), decimal.Parse(valor), descricao, operadorId);
 
             _mediator.Send(comando).GetAwaiter().GetResult();
         }

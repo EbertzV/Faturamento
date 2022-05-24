@@ -9,5 +9,6 @@ namespace Dados.Modelos
         public string Tipo { get; set; }
         public decimal Valor { get; set; }
         public Caixa Caixa { get; set; }
+        public DateTime Data { get; set; }
     }
 }

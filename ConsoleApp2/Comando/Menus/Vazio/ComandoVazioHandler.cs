@@ -1,8 +1,10 @@
-﻿namespace Cliente.Comando.Menus.Vazio
+﻿using System;
+
+namespace Cliente.Comando.Menus.Vazio
 {
     public sealed class ComandoVazioHandler : IComandoHandler
     {
-        public void Executar()
+        public void Executar(Guid operadorId)
         {
         }
     }

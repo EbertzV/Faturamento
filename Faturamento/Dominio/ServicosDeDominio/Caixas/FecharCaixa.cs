@@ -1,4 +1,5 @@
-﻿using Faturamento.Dominio.Caixas;
+﻿using Faturamento.Definicoes;
+using Faturamento.Dominio.Caixas;
 using Faturamento.Dominio.ServicosDeDominio.Movimentos;
 using MediatR;
 using System;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Faturamento.Dominio.ServicosDeDominio.Caixas
 {
-    public sealed class FecharCaixaComando : IRequest<bool>
+    public sealed class FecharCaixaComando : IRequest<Resultado<bool>>
     {
         public FecharCaixaComando(Guid idCaixa)
         {
@@ -17,7 +18,7 @@ namespace Faturamento.Dominio.ServicosDeDominio.Caixas
         public Guid IdCaixa { get; }
     }
 
-    public sealed class FecharCaixa : IRequestHandler<FecharCaixaComando, bool>
+    public sealed class FecharCaixa : IRequestHandler<FecharCaixaComando, Resultado<bool>>
     {
         private readonly ICaixaRepositorio _caixaRepositorio;
         private readonly IMovimentosRepositorio _movimentosRepositorio;
@@ -28,18 +29,18 @@ namespace Faturamento.Dominio.ServicosDeDominio.Caixas
             _movimentosRepositorio = movimentosRepositorio;
         }
 
-        public async Task<bool> Handle(FecharCaixaComando request, CancellationToken cancellationToken)
+        public async Task<Resultado<bool>> Handle(FecharCaixaComando request, CancellationToken cancellationToken)
         {
             var caixa = await _caixaRepositorio.RecuperarCaixaAsync(request.IdCaixa);
             var movimentos = await _movimentosRepositorio.RecuperarParaCaixaAsync(request.IdCaixa);
 
-            var fechamento = new Fechamento(caixa, new MovimentosDoCaixa(movimentos));
-            if (fechamento.Efetuar())
-            {
-                caixa.Fechar();
-                await _caixaRepositorio.AtualizarAsync(caixa);
-            }
+            var fechamento = new Fechamento(caixa, ResultadoMovimentosCaixa.NovoAPartirDeMovimentos(movimentos));
 
+            if (fechamento.Executar() is var resultado && resultado.EhFalha)
+                return resultado.Falha;    
+
+            await _caixaRepositorio.AtualizarAsync(caixa);
+            
             return true;
         }
     }

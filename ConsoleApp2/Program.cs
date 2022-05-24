@@ -1,6 +1,6 @@
-﻿using Cliente;
-using Cliente.Comando;
+﻿using Cliente.Comando;
 using Cliente.Template;
+using Faturamento.Definicoes;
 using Faturamento.Dominio.Recebimentos;
 using Faturamento.Dominio.ServicosDeDominio.Caixas;
 using Faturamento.Dominio.ServicosDeDominio.Pagamentos;
@@ -9,7 +9,6 @@ using Infra.SqlServer;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.IO;
 
 namespace ConsoleApp2
 {
@@ -25,6 +24,10 @@ namespace ConsoleApp2
 
             Console.Write(_fillTemplate.Fill("cabecalho"));
 
+            Console.WriteLine("Digite o id do operador:\n");
+            if (!Guid.TryParse(Console.ReadLine(), out Guid id))
+                id = Guid.NewGuid();
+
             var comando = "";
             while (comando != "sair")
             {
@@ -33,7 +36,7 @@ namespace ConsoleApp2
 
                 comando = Console.ReadLine();
                 var comandoHandler = menu.Gerar(comando);
-                comandoHandler.Executar();
+                comandoHandler.Executar(id);
             }
             
             Console.Write(_fillTemplate.Fill("final_sucesso"));
@@ -49,11 +52,11 @@ namespace ConsoleApp2
             var serviceCollection = new ServiceCollection();
             serviceCollection
                 .AddMediatR(typeof(Program))
-                .AddScoped<EfetuarPagamentoServico>()
-                .AddScoped<EfeutarRecebimentoServico>()
-                .AddScoped<EfetuarTransferenciaServico>()
-                .AddScoped<AbrirCaixa>()
-                .AddScoped<FecharCaixa>();
+                .AddScoped<IRequestHandler<EfetuarRecebimentoComando, Resultado<bool>>, EfeutarRecebimentoServico>()
+                .AddScoped<IRequestHandler<EfetuarTransferenciaComando, Resultado<bool>>, EfetuarTransferenciaServico>()
+                .AddScoped<IRequestHandler<EfetuarPagamentoComando, Resultado<bool>>, EfetuarPagamentoServico>()
+                .AddScoped<IRequestHandler<FecharCaixaComando, Resultado<bool>>, FecharCaixa>()
+                .AddScoped<IRequestHandler<AbrirCaixaComando, Resultado<bool>>, AbrirCaixa>();
             ServiceProviderConfiguration.AdicionarServicos(serviceCollection);
             _serviceProvider = serviceCollection.BuildServiceProvider();
         }

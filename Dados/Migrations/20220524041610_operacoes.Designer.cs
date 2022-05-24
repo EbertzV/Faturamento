@@ -4,14 +4,16 @@ using Dados;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Dados.Migrations
 {
     [DbContext(typeof(CaixasContext))]
-    partial class CaixasContextModelSnapshot : ModelSnapshot
+    [Migration("20220524041610_operacoes")]
+    partial class operacoes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,9 +73,6 @@ namespace Dados.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("OperadorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("PagamentoId")
