@@ -1,16 +1,16 @@
 ﻿using System;
 using Faturamento.Dominio.ServicosDeDominio.Caixas;
-using Microsoft.Extensions.DependencyInjection;
+using MediatR;
 
 namespace Cliente.Comando.Menus.MenuInicial
 {
     public sealed class AbrirCaixaComandoHandler : IComandoHandler
     {
-        private readonly IServiceProvider _container;
+        private readonly IMediator _mediator;
 
-        public AbrirCaixaComandoHandler(IServiceProvider container)
+        public AbrirCaixaComandoHandler(IMediator mediator)
         {
-            _container = container;
+            _mediator = mediator;
         }
 
         public void Executar()
@@ -18,9 +18,7 @@ namespace Cliente.Comando.Menus.MenuInicial
             Console.WriteLine("Informe o caixa");
             var caixa = Console.ReadLine();
 
-            var servico = new AbrirCaixa(_container.GetService<ICaixaRepositorio>());
-
-            servico.Executar(Guid.Parse(caixa)).GetAwaiter().GetResult();
+            _mediator.Send(new AbrirCaixaComando(Guid.Parse(caixa))).GetAwaiter().GetResult();
         }
     }
 }

@@ -1,8 +1,9 @@
-﻿using System;
+﻿using MediatR;
+using System;
 
 namespace Faturamento.Dominio.ServicosDeDominio.Transferencias
 {
-    public sealed class EfetuarTransferenciaComando
+    public sealed class EfetuarTransferenciaComando : IRequest<bool>
     {
         public EfetuarTransferenciaComando(Guid caixaOrigemId, Guid caixaDestinoId, decimal valor, string descricao)
         {

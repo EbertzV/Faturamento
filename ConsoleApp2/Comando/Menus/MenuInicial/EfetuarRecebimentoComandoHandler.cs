@@ -1,18 +1,16 @@
 ﻿using Faturamento.Dominio.Recebimentos;
-using Faturamento.Dominio.ServicosDeDominio.Caixas;
-using Faturamento.Dominio.ServicosDeDominio.Operacoes;
 using System;
-using Microsoft.Extensions.DependencyInjection;
+using MediatR;
 
 namespace Cliente.Comando.Menus.MenuInicial
 {
     public sealed class EfetuarRecebimentoComandoHandler : IComandoHandler
     {
-        private readonly IServiceProvider _container;
+        private readonly IMediator _mediator;
 
-        public EfetuarRecebimentoComandoHandler(IServiceProvider container)
+        public EfetuarRecebimentoComandoHandler(IMediator mediator)
         {
-            _container = container;
+            _mediator = mediator;
         }
 
         public void Executar()
@@ -25,11 +23,10 @@ namespace Cliente.Comando.Menus.MenuInicial
 
             Console.WriteLine("Informe a descrição");
             var descricao = Console.ReadLine();
-
-            var servico = new EfeutarRecebimentoServico(_container.GetService<ICaixaRepositorio>(), _container.GetService<IOperacoesRepositorio>());
+            
             var comando = new EfetuarRecebimentoComando(Guid.Parse(caixa), decimal.Parse(valor), descricao);
-
-            servico.Executar(comando).GetAwaiter().GetResult();
+            
+            var resultado = _mediator.Send(comando).GetAwaiter().GetResult();
         }
     }
 }

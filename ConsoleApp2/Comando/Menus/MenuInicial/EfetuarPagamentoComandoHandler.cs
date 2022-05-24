@@ -1,18 +1,16 @@
 ﻿using System;
-using Faturamento.Dominio.ServicosDeDominio.Caixas;
-using Faturamento.Dominio.ServicosDeDominio.Operacoes;
 using Faturamento.Dominio.ServicosDeDominio.Pagamentos;
-using Microsoft.Extensions.DependencyInjection;
+using MediatR;
 
 namespace Cliente.Comando.Menus.MenuInicial
 {
     public sealed class EfetuarPagamentoComandoHandler : IComandoHandler
     {
-        private readonly IServiceProvider _container;
+        private readonly IMediator _mediator;
 
-        public EfetuarPagamentoComandoHandler(IServiceProvider container)
+        public EfetuarPagamentoComandoHandler(IMediator mediator)
         {
-            _container = container;
+            _mediator = mediator;
         }
 
         public void Executar()
@@ -26,10 +24,9 @@ namespace Cliente.Comando.Menus.MenuInicial
             Console.WriteLine("Informe a descrição");
             var descricao = Console.ReadLine();
 
-            var servico = new EfetuarPagamentoServico(_container.GetService<ICaixaRepositorio>(), _container.GetService<IOperacoesRepositorio>());
             var comando = new EfetuarPagamentoComando(Guid.Parse(caixa), decimal.Parse(valor), descricao);
 
-            servico.Executar(comando).GetAwaiter().GetResult();
+            _mediator.Send(comando).GetAwaiter().GetResult();
         }
     }
 }

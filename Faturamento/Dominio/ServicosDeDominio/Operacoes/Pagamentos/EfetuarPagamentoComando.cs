@@ -1,8 +1,9 @@
-﻿using System;
+﻿using MediatR;
+using System;
 
 namespace Faturamento.Dominio.ServicosDeDominio.Pagamentos
 {
-    public sealed class EfetuarPagamentoComando
+    public sealed class EfetuarPagamentoComando : IRequest<bool>
     {
         public EfetuarPagamentoComando(Guid caixaId, decimal valor, string descricao)
         {

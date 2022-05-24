@@ -1,8 +1,9 @@
-﻿using System;
+﻿using MediatR;
+using System;
 
 namespace Faturamento.Dominio.Recebimentos
 {
-    public sealed class EfetuarRecebimentoComando
+    public sealed class EfetuarRecebimentoComando : IRequest<bool>
     {
         public EfetuarRecebimentoComando(Guid caixaId, decimal valor, string descricao)
         {
