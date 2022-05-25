@@ -18,12 +18,12 @@ namespace Faturamento.Dominio.ServicosDeDominio.Caixas
         public Guid IdCaixa { get; }
     }
 
-    public sealed class FecharCaixa : IRequestHandler<FecharCaixaComando, Resultado<bool>>
+    public sealed class FecharCaixaServico : IRequestHandler<FecharCaixaComando, Resultado<bool>>
     {
         private readonly ICaixaRepositorio _caixaRepositorio;
         private readonly IMovimentosRepositorio _movimentosRepositorio;
 
-        public FecharCaixa(ICaixaRepositorio caixaRepositorio, IMovimentosRepositorio movimentosRepositorio)
+        public FecharCaixaServico(ICaixaRepositorio caixaRepositorio, IMovimentosRepositorio movimentosRepositorio)
         {
             _caixaRepositorio = caixaRepositorio;
             _movimentosRepositorio = movimentosRepositorio;

@@ -21,6 +21,8 @@ namespace Cliente
                     return new EfetuarRecebimentoComandoHandler(_mediator);
                 case "abrir caixa":
                     return new AbrirCaixaComandoHandler(_mediator);
+                case "fechar caixa":
+                    return new FecharCaixaComandoHandler(_mediator);
                 case "pagar":
                     return new EfetuarPagamentoComandoHandler(_mediator);
                 case "transferir":

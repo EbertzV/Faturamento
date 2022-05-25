@@ -16,11 +16,11 @@ namespace Faturamento.Dominio.ServicosDeDominio.Caixas
         public Guid IdCaixa { get; }
     }
 
-    public sealed class AbrirCaixa : IRequestHandler<AbrirCaixaComando, Resultado<bool>>
+    public sealed class AbrirCaixaServico : IRequestHandler<AbrirCaixaComando, Resultado<bool>>
     {
         private readonly ICaixaRepositorio _caixaRepositorio;
 
-        public AbrirCaixa(ICaixaRepositorio caixaRepositorio)
+        public AbrirCaixaServico(ICaixaRepositorio caixaRepositorio)
         {
             _caixaRepositorio = caixaRepositorio;
         }
