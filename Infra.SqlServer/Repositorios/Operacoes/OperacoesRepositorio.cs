@@ -3,6 +3,7 @@ using Faturamento.Dominio.Operacoes;
 using Faturamento.Dominio.ServicosDeDominio.Operacoes;
 using Infra.SqlServer.Modelos;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading.Tasks;
 
@@ -10,9 +11,16 @@ namespace Infra.SqlServer.Repositorios.Operacoes
 {
     public sealed class OperacoesRepositorio : IOperacoesRepositorio
     {
+        private readonly IConfiguration _configuration;
+
+        public OperacoesRepositorio(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public async Task GravarAsync(Pagamento pagamento, Guid operadorId)
         {
-            using var context = new CaixaDBContext();
+            using var context = new CaixaDBContext(_configuration);
             var caixaDB = await context.Caixas.FirstOrDefaultAsync(c => pagamento.Caixa.Id == c.Id);
             caixaDB.SaldoAtual = pagamento.Caixa.SaldoAtual;
 
@@ -39,7 +47,7 @@ namespace Infra.SqlServer.Repositorios.Operacoes
 
         public async Task GravarAsync(Recebimento recebimento, Guid operadorId)
         {
-            using var context = new CaixaDBContext();
+            using var context = new CaixaDBContext(_configuration);
             var caixaDB = await context.Caixas.FirstOrDefaultAsync(c => recebimento.Caixa.Id == c.Id);
             caixaDB.SaldoAtual = recebimento.Caixa.SaldoAtual;
 
@@ -66,7 +74,7 @@ namespace Infra.SqlServer.Repositorios.Operacoes
 
         public async Task GravarAsync(Transferencia transferencia, Guid operadorId)
         {
-            using var context = new CaixaDBContext();
+            using var context = new CaixaDBContext(_configuration);
             var caixaOrigem = await context.Caixas.FirstOrDefaultAsync(c => transferencia.CaixaOrigem.Id == c.Id);
             caixaOrigem.SaldoAtual = transferencia.CaixaOrigem.SaldoAtual;
 

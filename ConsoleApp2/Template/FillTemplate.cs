@@ -1,6 +1,11 @@
 ﻿namespace Cliente.Template
 {
-    public sealed class FillTemplate
+    public interface IFillTemplate
+    {
+        string Fill(string section);
+    }
+
+    public sealed class FillTemplate : IFillTemplate
     {
         private readonly string _path;
 

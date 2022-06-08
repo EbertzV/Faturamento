@@ -6,14 +6,16 @@ using System;
 using System.Linq;
 using System.Reflection;
 using MediatR.Extensions.Autofac.DependencyInjection;
+using Serilog;
+using Microsoft.Extensions.Configuration;
 
 namespace ConsoleApp2
 {
     class Program
     {
         private static IContainer _serviceProvider;
-        private static readonly string _config = "./template/config.txt";
-        private static readonly FillTemplate _fillTemplate = new FillTemplate(_config);
+        private static IFillTemplate _fillTemplate;
+        public static IConfiguration _configuration;
 
         static void Main(string[] args)
         {
@@ -41,7 +43,22 @@ namespace ConsoleApp2
 
         public static void Setup()
         {
+            _configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .Build();
+
+            _fillTemplate = new FillTemplate(_configuration.GetSection("Template").Value);
+
             ConfigureServices();
+            ConfigureLogger();
+        }
+
+        public static void ConfigureLogger()
+        {
+            using var log = new LoggerConfiguration()
+                .MinimumLevel.Verbose()
+                .WriteTo.File(_configuration.GetSection("Logging").GetSection("LogFile").Value)
+                .CreateLogger();
         }
 
         public static void ConfigureServices()
@@ -52,6 +69,8 @@ namespace ConsoleApp2
             var infra = Assembly.Load("Infra.SqlServer");
 
             builder.RegisterMediatR(typeof(Program).Assembly, faturamento, infra);
+
+            builder.RegisterInstance(_configuration);
 
             builder
                 .RegisterAssemblyTypes(faturamento)
