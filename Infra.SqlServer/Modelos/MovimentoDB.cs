@@ -1,7 +1,5 @@
 ﻿using Infra.SqlServer.Modelos.Caixas;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Infra.SqlServer.Modelos
 {

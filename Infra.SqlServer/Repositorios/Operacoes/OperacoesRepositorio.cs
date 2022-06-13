@@ -11,17 +11,16 @@ namespace Infra.SqlServer.Repositorios.Operacoes
 {
     public sealed class OperacoesRepositorio : IOperacoesRepositorio
     {
-        private readonly IConfiguration _configuration;
+        private readonly CaixaDBContext _caixaDBContext;
 
-        public OperacoesRepositorio(IConfiguration configuration)
+        public OperacoesRepositorio(CaixaDBContext caixaDBContext)
         {
-            _configuration = configuration;
+            _caixaDBContext = caixaDBContext;
         }
 
         public async Task GravarAsync(Pagamento pagamento, Guid operadorId)
         {
-            using var context = new CaixaDBContext(_configuration);
-            var caixaDB = await context.Caixas.FirstOrDefaultAsync(c => pagamento.Caixa.Id == c.Id);
+            var caixaDB = await _caixaDBContext.Caixas.FirstOrDefaultAsync(c => pagamento.Caixa.Id == c.Id);
             caixaDB.SaldoAtual = pagamento.Caixa.SaldoAtual;
 
             var movimento = new MovimentoDB
@@ -33,22 +32,21 @@ namespace Infra.SqlServer.Repositorios.Operacoes
                 Data = pagamento.Movimento.Data,
                 Caixa = caixaDB
             };
-            context.Movimentos.Add(movimento);
+            _caixaDBContext.Movimentos.Add(movimento);
 
-            await context.Operacoes.AddAsync(new OperacaoDB
+            await _caixaDBContext.Operacoes.AddAsync(new OperacaoDB
             {
                 Id = pagamento.Id,
                 Pagamento = movimento,
                 OperadorId = operadorId
             });
 
-            await context.SaveChangesAsync();
+            await _caixaDBContext.SaveChangesAsync();
         }
 
         public async Task GravarAsync(Recebimento recebimento, Guid operadorId)
         {
-            using var context = new CaixaDBContext(_configuration);
-            var caixaDB = await context.Caixas.FirstOrDefaultAsync(c => recebimento.Caixa.Id == c.Id);
+            var caixaDB = await _caixaDBContext.Caixas.FirstOrDefaultAsync(c => recebimento.Caixa.Id == c.Id);
             caixaDB.SaldoAtual = recebimento.Caixa.SaldoAtual;
 
             var movimento = new MovimentoDB
@@ -60,25 +58,24 @@ namespace Infra.SqlServer.Repositorios.Operacoes
                 Data = recebimento.Movimento.Data,
                 Caixa = caixaDB
             };
-            context.Movimentos.Add(movimento);
+            _caixaDBContext.Movimentos.Add(movimento);
 
-            await context.Operacoes.AddAsync(new OperacaoDB
+            await _caixaDBContext.Operacoes.AddAsync(new OperacaoDB
             {
                 Id = recebimento.Id,
                 Recebimento = movimento,
                 OperadorId = operadorId
             });
 
-            await context.SaveChangesAsync();
+            await _caixaDBContext.SaveChangesAsync();
         }
 
         public async Task GravarAsync(Transferencia transferencia, Guid operadorId)
         {
-            using var context = new CaixaDBContext(_configuration);
-            var caixaOrigem = await context.Caixas.FirstOrDefaultAsync(c => transferencia.CaixaOrigem.Id == c.Id);
+            var caixaOrigem = await _caixaDBContext.Caixas.FirstOrDefaultAsync(c => transferencia.CaixaOrigem.Id == c.Id);
             caixaOrigem.SaldoAtual = transferencia.CaixaOrigem.SaldoAtual;
 
-            var caixaDestino = await context.Caixas.FirstOrDefaultAsync(c => transferencia.CaixaDestino.Id == c.Id);
+            var caixaDestino = await _caixaDBContext.Caixas.FirstOrDefaultAsync(c => transferencia.CaixaDestino.Id == c.Id);
             caixaDestino.SaldoAtual = transferencia.CaixaDestino.SaldoAtual;
 
             var movimentoSaida = new MovimentoDB
@@ -101,11 +98,11 @@ namespace Infra.SqlServer.Repositorios.Operacoes
                 Caixa = caixaDestino
             };
 
-            await context.Movimentos.AddAsync(movimentoSaida);
+            await _caixaDBContext.Movimentos.AddAsync(movimentoSaida);
 
-            await context.Movimentos.AddAsync(movimentoEntrada);
+            await _caixaDBContext.Movimentos.AddAsync(movimentoEntrada);
 
-            await context.Operacoes.AddAsync(new OperacaoDB
+            await _caixaDBContext.Operacoes.AddAsync(new OperacaoDB
             {
                 Id = transferencia.Id,
                 Pagamento = movimentoSaida,
@@ -113,7 +110,7 @@ namespace Infra.SqlServer.Repositorios.Operacoes
                 OperadorId = operadorId
             });
             
-            await context.SaveChangesAsync();
+            await _caixaDBContext.SaveChangesAsync();
         }
     }
 }

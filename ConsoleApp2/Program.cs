@@ -8,6 +8,7 @@ using System.Reflection;
 using MediatR.Extensions.Autofac.DependencyInjection;
 using Serilog;
 using Microsoft.Extensions.Configuration;
+using Infra.SqlServer.Modelos;
 
 namespace ConsoleApp2
 {
@@ -71,6 +72,9 @@ namespace ConsoleApp2
             builder.RegisterMediatR(typeof(Program).Assembly, faturamento, infra);
 
             builder.RegisterInstance(_configuration);
+
+            var contexto = new CaixaDBContext(_configuration);
+            builder.RegisterInstance(contexto);
 
             builder
                 .RegisterAssemblyTypes(faturamento)

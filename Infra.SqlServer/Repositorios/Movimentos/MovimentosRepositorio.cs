@@ -13,17 +13,16 @@ namespace Infra.SqlServer.Repositorios.Movimentos
 {
     public sealed class MovimentosRepositorio : IMovimentosRepositorio
     {
-        private readonly IConfiguration _configuration;
+        private readonly CaixaDBContext _caixaDBContext;
 
-        public MovimentosRepositorio(IConfiguration configuration)
+        public MovimentosRepositorio(CaixaDBContext caixaDBContext)
         {
-            _configuration = configuration;
+            _caixaDBContext = caixaDBContext;
         }
         public async Task<IEnumerable<Movimento>> RecuperarParaCaixaAsync(Guid caixaId)
         {
-            var contexto = new CaixaDBContext(_configuration);
-            var movimentosDb = contexto.Movimentos.Where(m => m.Caixa.Id == caixaId);
-            return movimentosDb.Select(m => new Movimento(m.Id, m.Descricao, (ETipoMovimento)Enum.Parse(typeof(ETipoMovimento), m.Tipo), m.Valor, m.Data));
+            var movimentosDb = _caixaDBContext.Movimentos.Where(m => m.Caixa.Id == caixaId).ToList();
+            return movimentosDb.Select(m => new Movimento(m.Id, m.Descricao, (ETipoMovimento)Enum.Parse(typeof(ETipoMovimento), (string)m.Tipo), m.Valor, m.Data));
         }
     }
 }
