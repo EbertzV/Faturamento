@@ -22,6 +22,11 @@ namespace ConsoleApp2
         {
             Setup();
 
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.File(_configuration.GetSection("Logging").GetSection("LogFile").Value)
+                .CreateLogger();
+            Log.Information("Programa iniciado.");
+
             Console.Write(_fillTemplate.Fill("cabecalho"));
 
             Console.WriteLine("Digite o id do operador:\n");
@@ -38,7 +43,10 @@ namespace ConsoleApp2
                 var comandoHandler = menu.Gerar(comando);
                 comandoHandler.Executar(id);
             }
-            
+
+            Log.Information("Programa encerrado.");
+            Log.CloseAndFlush();
+
             Console.Write(_fillTemplate.Fill("final_sucesso"));
         }
 
@@ -51,15 +59,6 @@ namespace ConsoleApp2
             _fillTemplate = new FillTemplate(_configuration.GetSection("Template").Value);
 
             ConfigureServices();
-            ConfigureLogger();
-        }
-
-        public static void ConfigureLogger()
-        {
-            using var log = new LoggerConfiguration()
-                .MinimumLevel.Verbose()
-                .WriteTo.File(_configuration.GetSection("Logging").GetSection("LogFile").Value)
-                .CreateLogger();
         }
 
         public static void ConfigureServices()
@@ -70,7 +69,6 @@ namespace ConsoleApp2
             var infra = Assembly.Load("Infra.SqlServer");
 
             builder.RegisterMediatR(typeof(Program).Assembly, faturamento, infra);
-
             builder.RegisterInstance(_configuration);
 
             var contexto = new CaixaDBContext(_configuration);
